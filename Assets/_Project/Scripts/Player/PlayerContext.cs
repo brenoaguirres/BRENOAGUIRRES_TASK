@@ -1,6 +1,6 @@
 using UnityEngine;
 using Characters;
-using NUnit.Framework;
+using UnityEngine.Assertions;
 
 namespace Player
 {
@@ -10,8 +10,11 @@ namespace Player
         [Header("Settings")]
         [SerializeField] private string InputsTag = "Inputs";
 
+        [Space]
+        [Header("Components")]
         private Inputs _inputs;
         private Movement _movement;
+        private Interaction _interaction;
 
         private Rigidbody _rb;
         private Animator _anim;
@@ -20,8 +23,16 @@ namespace Player
         #endregion
             
         #region PROPERTIES
-        public Inputs Inputs => _inputs;
+        public Inputs Inputs
+        {
+            get
+            {
+                if (_inputs == null) _inputs = FindInputs();
+                return _inputs;
+            }
+        }
         public Movement Movement => _movement;
+        public Interaction Interaction => _interaction;
         public Rigidbody Rb => _rb;
         public Animator Anim => _anim;
         public PlayerFSM PlayerStateMachine
@@ -59,14 +70,20 @@ namespace Player
         }
         private void InitializeExternal()
         {
-            _inputs = GameObject.FindWithTag(InputsTag).GetComponent<Inputs>();
-            if (_inputs == null)
+            _inputs = FindInputs();
+            _movement = GetComponentInChildren<Movement>();
+            _interaction = GetComponentInChildren<Interaction>();
+        }
+        private Inputs FindInputs()
+        {
+            Inputs inputs = GameObject.FindWithTag(InputsTag).GetComponent<Inputs>();
+            if (inputs == null)
             {
                 Debug.LogError($"{nameof(Inputs)} component not found in the scene. Please ensure it is assigned to a GameObject with the '{InputsTag}' tag.");
-                return;
+                return null;
             }
 
-            _movement = GetComponentInChildren<Movement>();
+            return inputs;
         }
         private void Validate()
         {
@@ -74,6 +91,7 @@ namespace Player
             Assert.IsNotNull(_anim, $"{nameof(Animator)} component is null in {nameof(PlayerContext)}.");
             Assert.IsNotNull(_inputs, $"{nameof(Inputs)} component is null in {nameof(PlayerContext)}.");
             Assert.IsNotNull(_movement, $"{nameof(Movement)} component is null in {nameof(PlayerContext)}.");
+            Assert.IsNotNull(_interaction, $"{nameof(Interaction)} component is null in {nameof(PlayerContext)}.");
         }
         #endregion
     }
