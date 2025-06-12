@@ -1,0 +1,80 @@
+using UnityEngine;
+using Characters;
+using NUnit.Framework;
+
+namespace Player
+{
+    public class PlayerContext : MonoBehaviour
+    {
+        #region FIELDS
+        [Header("Settings")]
+        [SerializeField] private string InputsTag = "Inputs";
+
+        private Inputs _inputs;
+        private Movement _movement;
+
+        private Rigidbody _rb;
+        private Animator _anim;
+
+        private PlayerFSM _playerStateMachine;
+        #endregion
+            
+        #region PROPERTIES
+        public Inputs Inputs => _inputs;
+        public Movement Movement => _movement;
+        public Rigidbody Rb => _rb;
+        public Animator Anim => _anim;
+        public PlayerFSM PlayerStateMachine
+        {
+            get => _playerStateMachine;
+            set
+            {
+                if (_playerStateMachine != null)
+                {
+                    Debug.LogError($"{nameof(PlayerFSM)} on {nameof(PlayerContext)} already assigned. Please DO NOT modify the State Machine reference in runtime.");
+                    return;
+                }
+                _playerStateMachine = value;
+            }
+        }
+        #endregion
+
+        #region UNITY CALLBACKS
+        private void Awake()
+        {
+            InitializeInternal();
+        }
+        private void Start()
+        {
+            InitializeExternal();
+            Validate();
+        }
+        #endregion
+
+        #region CUSTOM METHODS
+        private void InitializeInternal()
+        {
+            _rb = GetComponent<Rigidbody>();
+            _anim = GetComponent<Animator>();
+        }
+        private void InitializeExternal()
+        {
+            _inputs = GameObject.FindWithTag(InputsTag).GetComponent<Inputs>();
+            if (_inputs == null)
+            {
+                Debug.LogError($"{nameof(Inputs)} component not found in the scene. Please ensure it is assigned to a GameObject with the '{InputsTag}' tag.");
+                return;
+            }
+
+            _movement = GetComponentInChildren<Movement>();
+        }
+        private void Validate()
+        {
+            Assert.IsNotNull(_rb, $"{nameof(Rigidbody)} component is null in {nameof(PlayerContext)}.");
+            Assert.IsNotNull(_anim, $"{nameof(Animator)} component is null in {nameof(PlayerContext)}.");
+            Assert.IsNotNull(_inputs, $"{nameof(Inputs)} component is null in {nameof(PlayerContext)}.");
+            Assert.IsNotNull(_movement, $"{nameof(Movement)} component is null in {nameof(PlayerContext)}.");
+        }
+        #endregion
+    }
+}
