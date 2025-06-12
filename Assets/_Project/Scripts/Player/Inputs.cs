@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace Player
@@ -10,6 +11,7 @@ namespace Player
         private Vector2 _movement;
         private bool _confirm;
         private bool _back;
+
         private bool _menu;
         #endregion
 
@@ -59,15 +61,23 @@ namespace Player
             _playerInputs.Player.Back.performed += ctx => _back = ctx.ReadValueAsButton();
             _playerInputs.Player.Back.canceled += ctx => _back = ctx.ReadValueAsButton();
 
-            _playerInputs.Player.Menu.started += ctx => _menu = ctx.ReadValueAsButton();
-            _playerInputs.Player.Menu.performed += ctx => _menu = ctx.ReadValueAsButton();
-            _playerInputs.Player.Menu.canceled += ctx => _menu = ctx.ReadValueAsButton();
+            _playerInputs.Player.Menu.started += ctx =>
+            {
+                _menu = ctx.ReadValueAsButton();
+                StartCoroutine(ResetMenuButton());
+            };
 
         }
 
         public void CleanupInputs()
         {
             _playerInputs.Disable();
+        }
+
+        public IEnumerator ResetMenuButton()
+        {
+            yield return new WaitForEndOfFrame();
+            _menu = false;
         }
         #endregion
     }

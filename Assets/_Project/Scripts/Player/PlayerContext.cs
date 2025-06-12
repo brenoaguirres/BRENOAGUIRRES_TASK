@@ -1,6 +1,7 @@
 using UnityEngine;
 using Characters;
 using UnityEngine.Assertions;
+using Inventory;
 
 namespace Player
 {
@@ -15,6 +16,7 @@ namespace Player
         private Inputs _inputs;
         private Movement _movement;
         private Interaction _interaction;
+        private InventoryController _inventory;
 
         private Rigidbody _rb;
         private Animator _anim;
@@ -33,6 +35,7 @@ namespace Player
         }
         public Movement Movement => _movement;
         public Interaction Interaction => _interaction;
+        public InventoryController Inventory => _inventory;
         public Rigidbody Rb => _rb;
         public Animator Anim => _anim;
         public PlayerFSM PlayerStateMachine
@@ -73,6 +76,7 @@ namespace Player
             _inputs = FindInputs();
             _movement = GetComponentInChildren<Movement>();
             _interaction = GetComponentInChildren<Interaction>();
+            _inventory = GetComponentInChildren<InventoryController>();
         }
         private Inputs FindInputs()
         {
@@ -92,6 +96,7 @@ namespace Player
             Assert.IsNotNull(_inputs, $"{nameof(Inputs)} component is null in {nameof(PlayerContext)}.");
             Assert.IsNotNull(_movement, $"{nameof(Movement)} component is null in {nameof(PlayerContext)}.");
             Assert.IsNotNull(_interaction, $"{nameof(Interaction)} component is null in {nameof(PlayerContext)}.");
+            Assert.IsNotNull(_inventory, $"{nameof(InventoryController)} component is null in {nameof(PlayerContext)}.");
         }
         #endregion
     }

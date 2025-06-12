@@ -1,40 +1,34 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Player
 {
-    public class Idle : PlayerState
+    public class Pausing : PlayerState
     {
         #region CONSTRUCTOR
-        public Idle(PlayerContext context, PlayerFSM.EPlayerState key) : base(context, key){ }
+        public Pausing(PlayerContext context, PlayerFSM.EPlayerState key) : base(context, key) { }
         #endregion
 
         #region STATE IMPLEMENTATION
-        public override void EnterState() 
+        public override void EnterState()
         {
-            _context.Anim.SetFloat("Movement", _context.Inputs.Movement.magnitude);
+            _context.Inventory.OpenMenu();
         }
         public override void UpdateState() { }
         public override void FixedUpdateState() { }
-        public override void ExitState() { }
-        public override PlayerFSM.EPlayerState GetNextState() 
+        public override void ExitState() 
+        {
+            _context.Inventory.CloseMenu();
+        }
+        public override PlayerFSM.EPlayerState GetNextState()
         {
             if (_context.Inputs.Menu)
             {
-                return PlayerFSM.EPlayerState.Pausing;
+                return PlayerFSM.EPlayerState.Idle;
             }
 
-            if (_context.Inputs.Back)
-            {
-                return PlayerFSM.EPlayerState.Interacting;
-            }
-
-            if (_context.Inputs.Movement.magnitude > 0.01f)
-            {
-                return PlayerFSM.EPlayerState.Move;
-            }
-
-            return StateKey; 
+            return StateKey;
         }
         public override void OnTriggerEnter(Collider other) { }
         public override void OnTriggerStay(Collider other) { }

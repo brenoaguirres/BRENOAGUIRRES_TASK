@@ -12,6 +12,7 @@ namespace Player
             Idle,
             Move,
             Interacting,
+            Pausing,
         }
         #endregion
 
@@ -40,6 +41,7 @@ namespace Player
             States.Add(EPlayerState.Idle, new Idle(_context, EPlayerState.Idle));
             States.Add(EPlayerState.Move, new Moving(_context, EPlayerState.Move));
             States.Add(EPlayerState.Interacting, new Interacting(_context, EPlayerState.Interacting));
+            States.Add(EPlayerState.Pausing, new Pausing(_context, EPlayerState.Pausing));
 
             CurrentState = States[EPlayerState.Idle];
         }
