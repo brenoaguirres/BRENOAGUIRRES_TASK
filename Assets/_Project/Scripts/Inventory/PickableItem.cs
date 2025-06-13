@@ -1,4 +1,5 @@
 using UnityEngine;
+using Characters;
 
 namespace Inventory
 {
@@ -8,9 +9,10 @@ namespace Inventory
         [SerializeField] private ItemData itemData;
         #endregion
 
-        public void Interact()
+        public void Interact(Interaction interaction)
         {
-            Debug.Log($"Picked up item: {itemData.itemName}");
+            interaction.ForceClearClosestInteractable();
+            interaction.RootObject.GetComponentInChildren<InventoryController>().AddItem(itemData);
             Destroy(transform.parent.gameObject);
         }
     }

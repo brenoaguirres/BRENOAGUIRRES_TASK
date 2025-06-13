@@ -25,7 +25,7 @@ namespace Player
         public override void FixedUpdateState() { }
         public override void ExitState() 
         {
-            _hasInteracted = true;
+            _hasInteracted = false;
         }
         public override PlayerFSM.EPlayerState GetNextState()
         {

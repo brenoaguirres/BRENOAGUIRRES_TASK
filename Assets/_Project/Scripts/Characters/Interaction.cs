@@ -1,16 +1,28 @@
 using UnityEngine;
 using Inventory;
+using NUnit.Framework;
 
 namespace Characters
 {
     public class Interaction : MonoBehaviour
     {
         #region FIELDS
+        [Header("Settings")]
+        [SerializeField] private GameObject _rootObject;
         private bool _isCurrentlyInteracting = false;
         private IInteractable _closestInteractable;
         #endregion
 
+        #region PROPERTIES
+        public GameObject RootObject => _rootObject;
+        #endregion
+
         #region UNITY CALLBACKS
+        private void Awake()
+        {
+            Validate();
+        }
+      
         private void OnTriggerEnter(Collider other)
         {
             GetClosestInteractable(other);
@@ -23,6 +35,11 @@ namespace Characters
         #endregion
 
         #region CUSTOM METHODS
+        private void Validate()
+        {
+            Assert.IsNotNull(_rootObject, "Root object must be assigned in the Interaction component.");
+        }
+
         private void GetClosestInteractable(Collider other)
         {
             // Check if the collider has an IInteractable component and if it is not the current closest interactable
@@ -70,7 +87,7 @@ namespace Characters
             if (_closestInteractable != null && !_isCurrentlyInteracting)
             {
                 _isCurrentlyInteracting = true;
-                _closestInteractable.Interact();
+                _closestInteractable.Interact(this);
                 _isCurrentlyInteracting = false;
             }
         }
