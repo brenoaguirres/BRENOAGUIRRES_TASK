@@ -1,6 +1,6 @@
 using UnityEngine;
 using Inventory;
-using NUnit.Framework;
+using UnityEngine.Assertions;
 
 namespace Characters
 {
